@@ -11,13 +11,18 @@ const client = new mongodb.MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-console.log(`Listening to ${port}`);
+console.log(`Initializing`);
 await app.listen(port);
 
-console.log(`Connecting to: ${uri}`);
+console.log(`Connecting`);
 await client.connect();
 const db = client.db("phonebook");
 console.log("Initialized");
+
+app.get("/api/status", (req, res) => {
+  console.log("CHECK");
+  res.send('online');
+});
 
 app.get("/api/contacts", async (req, res) => {
   console.log("GET");
