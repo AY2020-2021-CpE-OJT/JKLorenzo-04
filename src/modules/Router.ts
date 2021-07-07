@@ -26,6 +26,5 @@ export default class Router {
       const route = (await import(file_path)).default as Route;
       this.app.use(endpoint, route(this.client));
     }
-    console.log("Initialized");
   }
 }

@@ -6,7 +6,6 @@ const uri = process.env.URI!;
 const port = process.env.PORT!;
 
 const app = express();
-await app.listen(port);
 
 const client = new mongodb.MongoClient(uri, {
   useNewUrlParser: true,
@@ -19,3 +18,6 @@ await client.connect();
 
 console.log(`Initializing`);
 await router.load();
+
+await app.listen(port);
+console.log("Online");
