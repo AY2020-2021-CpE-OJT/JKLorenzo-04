@@ -25,7 +25,7 @@ export default function (router: Router, client: MongoClient): Router {
           );
       } else {
         await client
-          .db("contacts")
+          .db("phonebook")
           .collection("contacts")
           .findOneAndDelete({ _id: id });
       }
