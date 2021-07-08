@@ -1,4 +1,4 @@
-export interface PBData {
+export default interface PBData {
   first_name: String;
   last_name: String;
   phone_numbers: String[];
