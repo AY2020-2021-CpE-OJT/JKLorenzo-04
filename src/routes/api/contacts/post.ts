@@ -4,7 +4,6 @@ import PBData from "../../../structures/PBData";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.post("/", async (req, res) => {
-    console.log("POST");
     try {
       const data: PBData = req.body;
       const id = `${data.first_name.toLowerCase()}_${data.last_name.toLowerCase()}`;
@@ -30,7 +29,6 @@ export default function (router: Router, client: MongoClient): Router {
           .findOneAndDelete({ _id: id });
       }
       await res.send("OK");
-      console.log(data);
     } catch (error) {
       console.error(error);
       await res.status(error.code ?? 400).send(String(error));

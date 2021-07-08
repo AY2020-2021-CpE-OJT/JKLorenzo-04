@@ -4,7 +4,6 @@ import PBData from "../../../structures/PBData";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.get("/", async (req, res) => {
-    console.log("GET");
     try {
       const data: PBData[] = await client
         .db("phonebook")
@@ -13,7 +12,6 @@ export default function (router: Router, client: MongoClient): Router {
         .sort({ first_name: 1, last_name: 1 })
         .toArray();
       await res.json(data);
-      console.log(data);
     } catch (error) {
       console.error(error);
       await res.status(error.code ?? 400).send(String(error));
