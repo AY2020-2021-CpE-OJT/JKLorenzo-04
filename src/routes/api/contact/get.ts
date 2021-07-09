@@ -12,10 +12,18 @@ export default function (router: Router, client: MongoClient): Router {
         return await res.status(400).send("INVALID_ID");
       }
 
-      const data: PBData = await client
+      const result = await client
         .db("phonebook")
         .collection("contacts")
         .findOne({ _id: new express.ObjectID(req.params.id) });
+
+      // construct
+      const data = {
+        _id: result?._id.toString(),
+        first_name: result?.first_name,
+        last_name: result?.last_name,
+        phone_numbers: result?.phone_numbers,
+      } as PBData;
 
       // expect a valid data
       if (!isPBData(data)) {
