@@ -1,7 +1,7 @@
 import { Router } from "express";
 import express, { MongoClient } from "mongodb";
 import { PBData } from "../../../structures/PBData.js";
-import { isPBPartialData } from "../../../utils/TypeGuards.js";
+import { isPBData, isPBPartialData } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.get("/:id", async (req, res) => {
@@ -16,6 +16,11 @@ export default function (router: Router, client: MongoClient): Router {
         .db("phonebook")
         .collection("contacts")
         .findOne({ _id: new express.ObjectID(req.params.id) });
+
+      // expect a valid data
+      if (!isPBData(data)) {
+        return await res.status(404).send("CONTACT_NOT_FOUND");
+      }
 
       await res.json(data);
     } catch (error) {

@@ -49,14 +49,14 @@ export default function (router: Router, client: MongoClient): Router {
 
       // construct
       const data = {
-        _id: operation.value._id.toString(),
-        first_name: operation.value.first_name,
-        last_name: operation.value.last_name,
-        phone_numbers: operation.value.phone_numbers ?? [],
+        _id: operation.value?._id.toString(),
+        first_name: operation.value?.first_name,
+        last_name: operation.value?.last_name,
+        phone_numbers: operation.value?.phone_numbers,
       } as PBData;
 
       // expect a valid data
-      if (!operation.ok || !isPBData(data)) {
+      if (!isPBData(data)) {
         return await res.status(500).send("UNEXPECTED_RESULT_FROM_OPERATION");
       }
 

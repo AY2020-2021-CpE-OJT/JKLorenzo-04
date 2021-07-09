@@ -1,6 +1,7 @@
 import { Router } from "express";
 import express, { MongoClient } from "mongodb";
-import { isPBPartialData } from "../../../utils/TypeGuards.js";
+import { PBData } from "../../../structures/PBData.js";
+import { isPBData, isPBPartialData } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.delete("/:id", async (req, res) => {
@@ -17,7 +18,20 @@ export default function (router: Router, client: MongoClient): Router {
         .collection("contacts")
         .findOneAndDelete({ _id: new express.ObjectID(req.params.id) });
 
-      await res.json(operation.value);
+      // construct
+      const data = {
+        _id: operation.value?._id.toString(),
+        first_name: operation.value?.first_name,
+        last_name: operation.value?.last_name,
+        phone_numbers: operation.value?.phone_numbers,
+      } as PBData;
+
+      // expect a valid data
+      if (!isPBData(data)) {
+        return await res.status(404).send("CONTACT_NOT_FOUND");
+      }
+
+      await res.json(data);
     } catch (error) {
       console.error(error);
       res.status(error.code ?? 400).send(String(error));

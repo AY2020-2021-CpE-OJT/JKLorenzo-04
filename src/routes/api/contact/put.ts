@@ -27,14 +27,14 @@ export default function (router: Router, client: MongoClient): Router {
 
       // construct data
       const data = {
-        _id: operation.insertedId.toString(),
+        _id: operation.insertedId?.toString(),
         first_name: partial_data.first_name,
         last_name: partial_data.last_name,
         phone_numbers: partial_data.phone_numbers,
       } as PBData;
 
       // expect a valid data
-      if (!operation.result.ok || !isPBData(data)) {
+      if (!isPBData(data)) {
         return await res.status(500).send("UNEXPECTED_RESULT_FROM_OPERATION");
       }
 
