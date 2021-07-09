@@ -5,7 +5,7 @@ import { isPBData, isPBPartialData } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.put("/", async (req, res) => {
-    console.log("contacts put");
+    console.log("contact put");
     try {
       // construct partial data
       const partial_data = {

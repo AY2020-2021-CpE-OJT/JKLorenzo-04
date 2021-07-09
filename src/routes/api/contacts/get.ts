@@ -4,7 +4,7 @@ import { PBData } from "../../../structures/PBData.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.get("/", async (req, res) => {
-    console.log("contacts get all");
+    console.log("contacts get");
     try {
       const result = await client
         .db("phonebook")
