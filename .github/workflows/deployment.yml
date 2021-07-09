@@ -23,12 +23,14 @@ jobs:
       - name: Deploy
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_app_name: 'jklorenzo-pb-api'
+          heroku_app_name: "jklorenzo-pb-api"
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          procfile: 'web: node ./dist/index.js'
-          buildpack: 'https://github.com/heroku/heroku-buildpack-nodejs.git'
-          healthcheck: 'https://jklorenzo-pb-api.herokuapp.com/status'
+          procfile: "web: node ./dist/index.js"
+          buildpack: "https://github.com/heroku/heroku-buildpack-nodejs.git"
+          healthcheck: "https://jklorenzo-pb-api.herokuapp.com/status"
           rollbackonhealthcheckfailed: true
-          checkstring: 'online'
+          checkstring: "online"
           delay: 30
+        env:
+          HD_URI: ${{secrets.DB_URI}}
