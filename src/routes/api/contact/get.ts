@@ -1,6 +1,6 @@
 import { Router } from "express";
 import express, { MongoClient } from "mongodb";
-import { PBData } from "../../../structures/PBData";
+import { PBData } from "../../../structures/PBData.js";
 import { isPBPartialData } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {

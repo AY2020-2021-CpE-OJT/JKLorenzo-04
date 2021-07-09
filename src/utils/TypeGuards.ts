@@ -1,4 +1,4 @@
-import { PBData, PBPartialData } from "../structures/PBData";
+import { PBData, PBPartialData } from "../structures/PBData.js";
 
 type PBDataProps = "id" | "first_name" | "last_name" | "phone_numbers";
 
