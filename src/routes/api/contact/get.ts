@@ -8,7 +8,7 @@ export default function (router: Router, client: MongoClient): Router {
     console.log("contact get");
     try {
       // expect a valid id
-      if (!isPBPartialData(req.params, ["id"])) {
+      if (!isPBPartialData({ _id: req.params.id }, ["id"])) {
         return await res.status(400).send("INVALID_ID");
       }
 
