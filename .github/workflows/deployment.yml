@@ -1,4 +1,5 @@
 name: Heroku Deployment
+
 on:
   push:
     branches:
@@ -25,6 +26,7 @@ jobs:
           heroku_app_name: 'jklorenzo-pb-api'
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          procfile: 'web: node ./dist/index.js'
           buildpack: 'https://github.com/heroku/heroku-buildpack-nodejs.git'
           healthcheck: 'https://jklorenzo-pb-api.herokuapp.com/status'
           rollbackonhealthcheckfailed: true
