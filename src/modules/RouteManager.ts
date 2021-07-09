@@ -21,7 +21,7 @@ export default class RouteManager {
     for (const route_path of getFiles(routes)) {
       const file_path = pathToFileURL(route_path).href;
       const rel_path = relative(routes, route_path);
-      const sections = rel_path.split("\\");
+      const sections = rel_path.replace(/\\/g, "/").split("/");
       const endpoint = "/" + sections.slice(0, sections.length - 1).join("/");
 
       if (current_route.endpoint !== endpoint) {
