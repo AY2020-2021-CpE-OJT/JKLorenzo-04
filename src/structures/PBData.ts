@@ -1,5 +1,13 @@
-export default interface PBData {
-  first_name: String;
-  last_name: String;
-  phone_numbers: String[];
+export interface PBData {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  phone_numbers: string[];
+}
+
+export interface PBPartialData {
+  _id?: string;
+  first_name?: string;
+  last_name?: string;
+  phone_numbers?: string[];
 }
