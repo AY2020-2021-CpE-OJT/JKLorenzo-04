@@ -31,6 +31,6 @@ jobs:
           healthcheck: "https://jklorenzo-pb-api.herokuapp.com/status"
           rollbackonhealthcheckfailed: true
           checkstring: "online"
-          delay: 30
+          delay: 10
         env:
           HD_URI: ${{secrets.DB_URI}}
