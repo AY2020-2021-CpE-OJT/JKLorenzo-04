@@ -15,24 +15,24 @@ export default class RouteManager {
   }
 
   async load() {
-    const routes = join(process.cwd(), "dist/routes");
-    const current_route = { endpoint: "", router: Router() };
+    const routes = new Map<string, Router>();
+    const routes_path = join(process.cwd(), "dist/routes");
 
-    for (const route_path of getFiles(routes)) {
+    for (const route_path of getFiles(routes_path)) {
       const file_path = pathToFileURL(route_path).href;
-      const rel_path = relative(routes, route_path);
+      const rel_path = relative(routes_path, route_path);
       const sections = rel_path.replace(/\\/g, "/").split("/");
       const endpoint = "/" + sections.slice(0, sections.length - 1).join("/");
 
-      if (current_route.endpoint !== endpoint) {
-        current_route.endpoint = endpoint;
-        current_route.router = Router();
-        console.log(`Route: ${current_route.endpoint}`);
-      }
-
       const route = (await import(file_path)).default as Route;
-      current_route.router = route(current_route.router, this.client);
-      this.app.use(current_route.endpoint, current_route.router);
+      const router = route(routes.get(endpoint) ?? Router(), this.client);
+
+      routes.set(endpoint, router);
+      this.app.use(endpoint, router);
+    }
+
+    for (const [endpoint] of routes) {
+      console.log("Route Loaded: " + endpoint);
     }
   }
 }
