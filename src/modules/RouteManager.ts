@@ -2,7 +2,7 @@ import { join, relative } from "path";
 import { pathToFileURL } from "url";
 import { Express, Router, json } from "express";
 import { MongoClient } from "mongodb";
-import Route from "../structures/Route";
+import Route from "../structures/Route.js";
 import { getFiles } from "../utils/Functions.js";
 
 export default class RouteManager {
