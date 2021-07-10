@@ -1,6 +1,7 @@
 import { Router } from "express";
-import express, { MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import { PBData } from "../../../structures/PBData.js";
+import { expectAll } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.get("/", async (req, res) => {
@@ -15,12 +16,14 @@ export default function (router: Router, client: MongoClient): Router {
 
       // construct
       const data = result.map((value) => {
-        return {
+        const this_data = {
           _id: value._id?.toString(),
           first_name: value?.first_name,
           last_name: value?.last_name,
           phone_numbers: value?.phone_numbers,
         } as PBData;
+        expectAll(this_data, "UNEXPECTED_RESULT");
+        return this_data;
       });
 
       await res.json(data);

@@ -1,42 +1,42 @@
 import { Router } from "express";
 import { MongoClient } from "mongodb";
-import { PBData, PBPartialData } from "../../../structures/PBData.js";
-import { isPBData, isPBPartialData } from "../../../utils/TypeGuards.js";
+import { PBData } from "../../../structures/PBData.js";
+import { expect, expectAll } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.put("/", async (req, res) => {
     console.log("contact put");
     try {
       // construct partial data
-      const partial_data = {
+      const insert_data = {
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         phone_numbers: req.body.phone_numbers ?? [],
-      } as PBPartialData;
+      } as PBData;
 
-      // expect a partial data with firstname and lastname
-      if (!isPBPartialData(partial_data, ["first_name", "last_name"])) {
-        return await res.status(400).send("INVALID_DATA");
-      }
+      // expect a partial data with firstname, lastname and phone numbers
+      expect(insert_data, ["first_name", "last_name", "phone_numbers"]);
 
       // insert contact
       const operation = await client
         .db("phonebook")
         .collection("contacts")
-        .insertOne(partial_data);
+        .insertOne(insert_data);
+
+      // check insert count
+      if (operation.insertedCount === 0) {
+        throw new Error("OPERATION_FAILED");
+      }
 
       // construct data
       const data = {
         _id: operation.insertedId?.toString(),
-        first_name: partial_data.first_name,
-        last_name: partial_data.last_name,
-        phone_numbers: partial_data.phone_numbers,
+        first_name: insert_data.first_name,
+        last_name: insert_data.last_name,
+        phone_numbers: insert_data.phone_numbers,
       } as PBData;
 
-      // expect a valid data
-      if (!isPBData(data)) {
-        return await res.status(500).send("UNEXPECTED_RESULT_FROM_OPERATION");
-      }
+      expectAll(data, "UNEXPECTED_RESULT");
 
       await res.json(data);
     } catch (error) {

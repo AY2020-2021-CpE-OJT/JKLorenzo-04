@@ -1,18 +1,16 @@
 import { Router } from "express";
 import express, { MongoClient } from "mongodb";
 import { PBData, PBPartialData } from "../../../../structures/PBData.js";
-import { isPBData, isPBPartialData } from "../../../../utils/TypeGuards.js";
+import { expect, expectAll } from "../../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.put("/", async (req, res) => {
-    console.log("contact/phone_numbers put");
+    console.log("contacts/phone_numbers put");
     try {
       const raw_data = req.body as PBPartialData;
 
       // expect a partial data with valid id and phone numbers
-      if (!isPBPartialData(raw_data, ["id", "phone_numbers"])) {
-        return await res.status(400).send("INVALID_DATA");
-      }
+      expect(raw_data, ["id", "phone_numbers"]);
 
       // update contact
       const operation = await client
@@ -30,18 +28,20 @@ export default function (router: Router, client: MongoClient): Router {
           { returnDocument: "after" }
         );
 
+      // expect a valid output
+      if (!operation.value) {
+        throw new Error("OPERATION_FAILED");
+      }
+
       // construct
       const data = {
-        _id: operation.value?._id.toString(),
-        first_name: operation.value?.first_name,
-        last_name: operation.value?.last_name,
-        phone_numbers: operation.value?.phone_numbers,
+        _id: operation.value._id?.toString(),
+        first_name: operation.value.first_name,
+        last_name: operation.value.last_name,
+        phone_numbers: operation.value.phone_numbers,
       } as PBData;
 
-      // expect a valid data
-      if (!isPBData(data)) {
-        return await res.status(500).send("UNEXPECTED_RESULT_FROM_OPERATION");
-      }
+      expectAll(data, "UNEXPECTED_RESULT");
 
       await res.json(data);
     } catch (error) {

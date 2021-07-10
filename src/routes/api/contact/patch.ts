@@ -1,7 +1,7 @@
 import { Router } from "express";
 import express, { MongoClient } from "mongodb";
 import { PBData, PBPartialData } from "../../../structures/PBData.js";
-import { isPBData, isPBPartialData } from "../../../utils/TypeGuards.js";
+import { expect, expectAll } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.patch("/:id", async (req, res) => {
@@ -10,29 +10,21 @@ export default function (router: Router, client: MongoClient): Router {
       const raw_data = req.body as PBPartialData;
       const update_data = {} as PBPartialData;
 
-      if (raw_data.first_name) {
-        // expect a partial data with valid first name
-        if (isPBPartialData(raw_data, ["first_name"])) {
-          update_data.first_name = raw_data.first_name;
-        } else {
-          return await res.status(400).send("INVALID_FIRST_NAME");
-        }
+      // expect valid id
+      expect({ _id: req.params.id }, ["id"]);
+
+      // expect valid data
+      if ("first_name" in raw_data) {
+        expect(raw_data, ["first_name"]);
+        update_data.first_name = raw_data.first_name;
       }
-      if (raw_data.last_name) {
-        // expect a partial data with valid last name
-        if (isPBPartialData(raw_data, ["last_name"])) {
-          update_data.last_name = raw_data.last_name;
-        } else {
-          return await res.status(400).send("INVALID_LAST_NAME");
-        }
+      if ("last_name" in raw_data) {
+        expect(raw_data, ["last_name"]);
+        update_data.last_name = raw_data.last_name;
       }
-      if (raw_data.phone_numbers) {
-        // expect a partial data with valid phone numbers
-        if (isPBPartialData(raw_data, ["phone_numbers"])) {
-          update_data.phone_numbers = raw_data.phone_numbers;
-        } else {
-          return await res.status(400).send("INVALID_PHONE_NUMBERS");
-        }
+      if ("phone_numbers" in raw_data) {
+        expect(raw_data, ["phone_numbers"]);
+        update_data.phone_numbers = raw_data.phone_numbers;
       }
 
       // update contact
@@ -47,18 +39,20 @@ export default function (router: Router, client: MongoClient): Router {
           { returnDocument: "after" }
         );
 
+      // expect a valid output
+      if (!operation.value) {
+        throw new Error("OPERATION_FAILED");
+      }
+
       // construct
       const data = {
-        _id: operation.value?._id.toString(),
-        first_name: operation.value?.first_name,
-        last_name: operation.value?.last_name,
-        phone_numbers: operation.value?.phone_numbers,
+        _id: operation.value._id?.toString(),
+        first_name: operation.value.first_name,
+        last_name: operation.value.last_name,
+        phone_numbers: operation.value.phone_numbers,
       } as PBData;
 
-      // expect a valid data
-      if (!isPBData(data)) {
-        return await res.status(500).send("UNEXPECTED_RESULT_FROM_OPERATION");
-      }
+      expectAll(data, "UNEXPECTED_RESULT");
 
       await res.json(data);
     } catch (error) {
