@@ -104,19 +104,19 @@ class _HomeState extends State<Home> {
             ),
           ),
           floatingActionButton: _isEditting
-              ? FloatingActionButton.extended(
-                  backgroundColor: Colors.red,
-                  icon: Icon(Icons.delete),
-                  label: Text('Delete',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 12, letterSpacing: 1)),
-                  onPressed: () async {
-                    setState(() {
-                      _isEditting = false;
-                    });
-                    await Cache.deleteContacts(_selected);
-                  },
-                )
+              ? _selected.length > 0
+                  ? FloatingActionButton.extended(
+                      backgroundColor: Colors.red,
+                      icon: Icon(Icons.delete),
+                      label: Text('Delete'),
+                      onPressed: () async {
+                        setState(() {
+                          _isEditting = false;
+                        });
+                        await Cache.deleteContacts(_selected);
+                      },
+                    )
+                  : null
               : FloatingActionButton(
                   child: Icon(Icons.add),
                   onPressed: () {},
