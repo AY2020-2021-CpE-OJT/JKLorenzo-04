@@ -1,13 +1,13 @@
 import { Router } from "express";
 import express, { MongoClient } from "mongodb";
-import { PBData } from "../../../structures/PBData.js";
+import { PBPartialData } from "../../../structures/PBData.js";
 import { expect } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.delete("/", async (req, res) => {
     console.log("contacts delete");
     try {
-      const partial_data = req.body as PBData[];
+      const partial_data = req.body as PBPartialData[];
 
       // expect valid ids
       for (const this_data of partial_data) expect(this_data, ["id"]);
