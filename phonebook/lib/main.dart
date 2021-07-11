@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/PBManager.dart';
+import 'screens/Home.dart';
 
 void main() => runApp(PhonebookApp());
 
@@ -8,7 +8,7 @@ class PhonebookApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Phonebook',
-      home: PBManager(),
+      home: Home(),
     );
   }
 }
