@@ -26,7 +26,7 @@ export default function (router: Router, client: MongoClient): Router {
         throw new Error("OPERATION_FAILED");
       }
 
-      await res.send(operation.deletedCount ?? 0);
+      await res.send(`${operation.deletedCount ?? 0}`);
     } catch (error) {
       console.error(error);
       res.json(error);
