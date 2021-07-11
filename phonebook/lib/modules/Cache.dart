@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:phonebook/modules/API.dart';
 import 'package:phonebook/structures/PBData.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
