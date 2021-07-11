@@ -37,7 +37,8 @@ class Cache {
       });
       final deleted_count = await API.deleteContacts(data);
       if (deleted_count > 0) _updated = true;
-      Toasts.showMessage('$deleted_count contacts deleted');
+      Toasts.showMessage(
+          '$deleted_count contact${deleted_count > 1 ? 's' : ''} deleted');
     } catch (error) {
       Toasts.showError(error.toString());
     }
