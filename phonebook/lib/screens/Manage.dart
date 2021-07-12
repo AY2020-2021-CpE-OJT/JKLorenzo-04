@@ -78,16 +78,19 @@ class _ManageState extends State<Manage> {
                   if (conditions.isNotEmpty) {
                     Toasts.showMessage(conditions.join(',\n'));
                   } else {
-                    await API.patchContact(
-                      PBData(
-                        _id,
-                        fname_ctrlr.text,
-                        lname_ctrlr.text,
-                        PNumTextFields.map((e) => e.controller.text).toList(),
-                      ),
-                    );
-                    Toasts.showMessage('Saved');
-                    Navigator.of(context).pop();
+                    try {
+                      await API.patchContact(
+                        PBData(
+                          _id,
+                          fname_ctrlr.text,
+                          lname_ctrlr.text,
+                          PNumTextFields.map((e) => e.controller.text).toList(),
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                    } catch (error) {
+                      Toasts.showMessage(error.toString());
+                    }
                   }
                 },
               ),
@@ -127,7 +130,10 @@ class _ManageState extends State<Manage> {
                       TextButton(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Icon(Icons.add), Text('Add Phone Number')],
+                          children: [
+                            Icon(Icons.add),
+                            Text('Add Phone Number'),
+                          ],
                         ),
                         onPressed: () {
                           setState(() {
