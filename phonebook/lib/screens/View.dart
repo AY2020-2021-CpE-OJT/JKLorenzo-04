@@ -31,7 +31,7 @@ class View extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => Manage(id: id),
+                      builder: (context) => Manage(data: snapshot.data!),
                     ),
                   );
                 },
