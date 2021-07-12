@@ -12,7 +12,7 @@ export function expect(
 
   if (expected.includes("id")) {
     if (typeof this_data._id !== "string" || this_data._id.length !== 24) {
-      throw new ExpectError(this_data, message ?? "INVALID_ID");
+      throw new ExpectError(message ?? "INVALID_ID");
     }
   }
 
@@ -21,7 +21,7 @@ export function expect(
       typeof this_data.first_name !== "string" ||
       this_data.first_name.length === 0
     ) {
-      throw new ExpectError(this_data, message ?? "INVALID_FIRST_NAME");
+      throw new ExpectError(message ?? "INVALID_FIRST_NAME");
     }
   }
 
@@ -30,7 +30,7 @@ export function expect(
       typeof this_data.last_name !== "string" ||
       this_data.last_name.length === 0
     ) {
-      throw new ExpectError(this_data, message ?? "INVALID_LAST_NAME");
+      throw new ExpectError(message ?? "INVALID_LAST_NAME");
     }
   }
 
@@ -41,7 +41,7 @@ export function expect(
         (pnum) => typeof pnum !== "string" || pnum.length === 0
       )
     ) {
-      throw new ExpectError(this_data, message ?? "INVALID_PHONE_NUMBERS");
+      throw new ExpectError(message ?? "INVALID_PHONE_NUMBERS");
     }
   }
 }
