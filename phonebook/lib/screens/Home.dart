@@ -8,16 +8,8 @@ import 'package:phonebook/utils/Toasts.dart';
 import '../structures/PBData.dart';
 
 Stream<List<PBData>> contacts() async* {
-  List<PBData> contacts = [];
-  yield* Stream.periodic(Duration(seconds: 1), (int seconds) async {
-    if (seconds % 5 == 1 || seconds == 0) {
-      try {
-        contacts = await API.getContacts();
-      } catch (error) {
-        Toasts.showError('Failed to get contacts');
-      }
-    }
-    return contacts;
+  yield* Stream.periodic(Duration(seconds: 5), (int seconds) async {
+    return await API.getContacts();
   }).asyncMap((event) async => await event);
 }
 
@@ -30,6 +22,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool _isEditting = false;
+  List<PBData> _contacts = [];
   List<String> _selected = [];
 
   @override
@@ -38,6 +31,12 @@ class _HomeState extends State<Home> {
       initialData: <PBData>[],
       stream: contacts(),
       builder: (context, AsyncSnapshot<List<PBData>> snapshot) {
+        if (snapshot.hasError) {
+          Toasts.showError('Failed to get contacts');
+        } else if (snapshot.hasData && snapshot.data != null) {
+          _contacts = snapshot.data!;
+        }
+
         return Scaffold(
           backgroundColor: Colors.grey[900],
           appBar: AppBar(
@@ -79,9 +78,9 @@ class _HomeState extends State<Home> {
           ),
           body: Center(
             child: ListView.builder(
-              itemCount: snapshot.data?.length ?? 0,
+              itemCount: _contacts.length,
               itemBuilder: (context, index) {
-                final this_data = snapshot.data![index];
+                final this_data = _contacts[index];
                 return ListTile(
                   horizontalTitleGap: 5,
                   leading: Icon(
@@ -142,14 +141,15 @@ class _HomeState extends State<Home> {
                   ),
                   label: Text('Delete', style: TextStyle(color: Colors.white)),
                   onPressed: () async {
+                    setState(() {
+                      _isEditting = false;
+                      _contacts.removeWhere((e) => _selected.contains(e.id));
+                    });
                     final result = await API.deleteContacts(
                         _selected.map((e) => PBPartialData(id: e)).toList());
 
                     Toasts.showMessage(
                         '$result contact${result > 1 ? 's' : ''} deleted');
-                    setState(() {
-                      _isEditting = false;
-                    });
                   },
                 )
               : null,
