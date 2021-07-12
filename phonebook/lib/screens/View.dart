@@ -17,7 +17,7 @@ class View extends StatelessWidget {
           backgroundColor: Colors.grey[900],
           appBar: AppBar(
             backgroundColor: Colors.grey[850],
-            title: Text('View Contact'),
+            title: Text('Contact'),
             centerTitle: true,
             actions: snapshot.hasData
                 ? [
