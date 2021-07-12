@@ -47,7 +47,7 @@ class _ManageState extends State<Manage> {
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
         backgroundColor: Colors.grey[850],
-        title: Text('Manage Contact'),
+        title: Text('Manage'),
         centerTitle: true,
         actions: [
           TextButton(
@@ -67,7 +67,7 @@ class _ManageState extends State<Manage> {
               }
 
               if (conditions.isNotEmpty) {
-                Toasts.showMessage(conditions.join(',\n'));
+                Toasts.showMessage(conditions.join('\n'));
               } else {
                 try {
                   await API.patchContact(
@@ -166,16 +166,53 @@ class _ManageState extends State<Manage> {
                       ],
                     ),
                     onPressed: () async {
-                      try {
-                        await API.deleteContact(data.id);
-                        Toasts.showMessage('Contact deleted');
-                        Navigator.of(context)
-                            .popUntil(ModalRoute.withName('/'));
-                      } catch (error) {
-                        Toasts.showMessage(error.toString());
-                      }
+                      showDialog(
+                        context: context,
+                        builder: (builder) {
+                          return CupertinoAlertDialog(
+                            title: Text(
+                              'Delete Contact',
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  try {
+                                    await API.deleteContact(data.id);
+                                    Toasts.showMessage('Contact deleted');
+                                    Navigator.of(context)
+                                        .popUntil(ModalRoute.withName('/'));
+                                  } catch (error) {
+                                    Toasts.showMessage(error.toString());
+                                  }
+                                },
+                              ),
+                              TextButton(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: Colors.white60,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                   ),
+                  SizedBox(height: 20),
                 ],
               ),
             ),

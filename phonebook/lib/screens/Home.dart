@@ -133,15 +133,59 @@ class _HomeState extends State<Home> {
                   ),
                   label: Text('Delete', style: TextStyle(color: Colors.white)),
                   onPressed: () async {
-                    setState(() {
-                      _isEditting = false;
-                      _contacts.removeWhere((e) => _selected.contains(e.id));
-                    });
-                    final result = await API.deleteContacts(
-                        _selected.map((e) => PBPartialData(id: e)).toList());
+                    showDialog(
+                      context: context,
+                      builder: (builder) {
+                        return CupertinoAlertDialog(
+                          title: Text(
+                            'Delete Contacts',
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Text(
+                                'Delete',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                              onPressed: () async {
+                                setState(() {
+                                  _isEditting = false;
+                                  _contacts.removeWhere(
+                                      (e) => _selected.contains(e.id));
+                                });
 
-                    Toasts.showMessage(
-                        '$result contact${result > 1 ? 's' : ''} deleted');
+                                try {
+                                  final result = await API.deleteContacts(
+                                      _selected
+                                          .map((e) => PBPartialData(id: e))
+                                          .toList());
+
+                                  Toasts.showMessage(
+                                      '$result contact${result > 1 ? 's' : ''} deleted');
+                                } catch (error) {
+                                  Toasts.showMessage(error.toString());
+                                }
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 )
               : null,
