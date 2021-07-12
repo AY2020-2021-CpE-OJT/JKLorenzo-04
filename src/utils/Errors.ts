@@ -1,8 +1,8 @@
 export class ExpectError extends Error {
   name = "ExpectError";
 
-  constructor(data: any, message: string) {
-    super(`${message} on : ${JSON.stringify(data, undefined, 4)}`);
+  constructor(message: string) {
+    super(message);
     Error.captureStackTrace(this, ExpectError);
   }
 }
