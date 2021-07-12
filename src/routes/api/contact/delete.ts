@@ -34,7 +34,7 @@ export default function (router: Router, client: MongoClient): Router {
       await res.send('OK');
     } catch (error) {
       console.error(error);
-      res.json(error);
+      res.send(String(error));
     }
   });
 }

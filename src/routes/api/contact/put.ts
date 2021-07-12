@@ -41,7 +41,7 @@ export default function (router: Router, client: MongoClient): Router {
       await res.json(data);
     } catch (error) {
       console.error(error);
-      res.json(error);
+      res.send(String(error));
     }
   });
 }
