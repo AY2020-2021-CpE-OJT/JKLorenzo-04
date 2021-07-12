@@ -41,14 +41,14 @@ class API {
     return PBData.fromJson(response_body);
   }
 
-  static Future<List<PBData>> getContacts() async {
+  static Future<List<PBPartialData>> getContacts() async {
     final _uri = Uri.https(_authority, '/api/contacts');
 
     final response = await get(_uri, headers: _headers);
     if (response.statusCode != 200) throw response.body;
 
     final response_body = jsonDecode(response.body) as List<dynamic>;
-    return response_body.map((data) => PBData.fromJson(data)).toList();
+    return response_body.map((data) => PBPartialData.fromJson(data)).toList();
   }
 
   static Future<int> deleteContacts(List<PBPartialData> data) async {
