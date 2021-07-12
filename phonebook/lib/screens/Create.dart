@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phonebook/modules/API.dart';
-import 'package:phonebook/screens/Manage.dart';
+import 'package:phonebook/screens/View.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
 import 'package:phonebook/utils/Toasts.dart';
 
@@ -64,7 +64,7 @@ class _CreateState extends State<Create> {
                   );
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => Manage(
+                      builder: (context) => View(
                         id: result.id,
                       ),
                     ),
@@ -98,6 +98,8 @@ class _CreateState extends State<Create> {
                       hintText: 'First Name',
                       labelText: 'First Name',
                     ),
+                    keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                   ),
                   TextField(
                     controller: lname_ctrlr,
@@ -106,6 +108,8 @@ class _CreateState extends State<Create> {
                       hintText: 'Last Name',
                       labelText: 'Last Name',
                     ),
+                    keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                   ),
                   SizedBox(height: 20),
                   ...PNumTextFields,
@@ -171,6 +175,7 @@ class PNumTextField extends StatelessWidget {
           },
         ),
       ),
+      keyboardType: TextInputType.number,
     );
   }
 }
