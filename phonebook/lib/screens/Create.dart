@@ -6,22 +6,18 @@ import 'package:phonebook/structures/PBPartialData.dart';
 import 'package:phonebook/utils/Toasts.dart';
 
 class Create extends StatefulWidget {
-  final String? id;
-  const Create({Key? key, String? this.id}) : super(key: key);
+  const Create({Key? key}) : super(key: key);
 
   @override
-  _CreateState createState() => _CreateState(id);
+  _CreateState createState() => _CreateState();
 }
 
 class _CreateState extends State<Create> {
-  String? _id;
   int PNumTextFields_id = 0;
 
   TextEditingController fname_ctrlr = TextEditingController();
   TextEditingController lname_ctrlr = TextEditingController();
   List<PNumTextField> PNumTextFields = [];
-
-  _CreateState(String? this._id);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +25,7 @@ class _CreateState extends State<Create> {
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
         backgroundColor: Colors.grey[850],
-        title: _id != null ? Text('Create Contact') : Text('New Contact'),
+        title: Text('New Contact'),
         centerTitle: true,
         actions: [
           TextButton(
@@ -51,7 +47,7 @@ class _CreateState extends State<Create> {
               }
 
               if (conditions.isNotEmpty) {
-                Toasts.showMessage(conditions.join(',\n'));
+                Toasts.showMessage(conditions.join('\n'));
               } else {
                 try {
                   final result = await API.putContact(
@@ -82,9 +78,12 @@ class _CreateState extends State<Create> {
           children: [
             SizedBox(height: 50),
             CircleAvatar(
-              child: _id != null
-                  ? Icon(Icons.person, size: 80)
-                  : Icon(Icons.person_add, size: 70),
+              backgroundColor: Colors.blueAccent,
+              child: Icon(
+                Icons.person_add,
+                color: Colors.white,
+                size: 80,
+              ),
               radius: 50,
             ),
             Padding(
