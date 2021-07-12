@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phonebook/modules/API.dart';
+import 'package:phonebook/screens/Manage.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
 import 'package:phonebook/utils/Toasts.dart';
 
@@ -35,6 +36,8 @@ class _CreateState extends State<Create> {
             child: Text('Save'),
             onPressed: () async {
               List<String> conditions = [];
+
+              // Check if all fields are valid
               if (fname_ctrlr.text.isEmpty) {
                 conditions.add('First Name must not be empty.');
               }
@@ -50,16 +53,25 @@ class _CreateState extends State<Create> {
               if (conditions.isNotEmpty) {
                 Toasts.showMessage(conditions.join(',\n'));
               } else {
-                await API.putContact(
-                  PBPartialData(
-                    first_name: fname_ctrlr.text,
-                    last_name: lname_ctrlr.text,
-                    phone_numbers:
-                        PNumTextFields.map((e) => e.controller.text).toList(),
-                  ),
-                );
-                Toasts.showMessage('Saved');
-                Navigator.of(context).pop();
+                try {
+                  final result = await API.putContact(
+                    PBPartialData(
+                      first_name: fname_ctrlr.text,
+                      last_name: lname_ctrlr.text,
+                      phone_numbers:
+                          PNumTextFields.map((e) => e.controller.text).toList(),
+                    ),
+                  );
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => Manage(
+                        id: result.id,
+                      ),
+                    ),
+                  );
+                } catch (error) {
+                  Toasts.showMessage(error.toString());
+                }
               }
             },
           ),
@@ -101,7 +113,10 @@ class _CreateState extends State<Create> {
                   TextButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Icon(Icons.add), Text('Add Phone Number')],
+                      children: [
+                        Icon(Icons.add),
+                        Text('Add Phone Number'),
+                      ],
                     ),
                     onPressed: () {
                       setState(() {
