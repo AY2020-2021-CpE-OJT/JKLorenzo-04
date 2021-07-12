@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phonebook/modules/API.dart';
 import 'package:phonebook/screens/Create.dart';
-import 'package:phonebook/screens/Manage.dart';
+import 'package:phonebook/screens/View.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
 import 'package:phonebook/utils/Toasts.dart';
 import '../structures/PBPartialData.dart';
@@ -113,7 +113,7 @@ class _HomeState extends State<Home> {
                     } else {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => Manage(
+                          builder: (context) => View(
                             id: this_data.id!,
                           ),
                         ),
