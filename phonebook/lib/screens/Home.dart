@@ -1,12 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:phonebook/modules/Cache.dart';
+import 'package:phonebook/modules/API.dart';
+import 'package:phonebook/screens/Create.dart';
+import 'package:phonebook/screens/Manage.dart';
+import 'package:phonebook/structures/PBPartialData.dart';
+import 'package:phonebook/utils/Toasts.dart';
 import '../structures/PBData.dart';
 
 Stream<List<PBData>> contacts() async* {
-  yield* Stream.periodic(Duration(seconds: 1), (int req) async {
-    return await Cache.getContacts(req % 60 == 1);
+  List<PBData> contacts = [];
+  yield* Stream.periodic(Duration(seconds: 1), (int seconds) async {
+    if (seconds % 5 == 1 || seconds == 0) {
+      try {
+        contacts = await API.getContacts();
+      } catch (error) {
+        Toasts.showError('Failed to get contacts');
+      }
+    }
+    return contacts;
   }).asyncMap((event) async => await event);
 }
 
@@ -33,21 +44,38 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.grey[850],
             title: Text('Contacts'),
             centerTitle: true,
-            actions: [
-              TextButton(
-                child: Text(_isEditting ? 'Cancel' : 'Edit'),
-                onPressed: () {
-                  setState(() {
-                    if (_isEditting) {
-                      _isEditting = false;
-                    } else {
-                      _selected = [];
-                      _isEditting = true;
-                    }
-                  });
-                },
-              )
-            ],
+            actions: _isEditting
+                ? [
+                    TextButton(
+                      child: Text('Cancel'),
+                      onPressed: () {
+                        setState(() {
+                          _isEditting = false;
+                        });
+                      },
+                    )
+                  ]
+                : [
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Create(),
+                          ),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.manage_accounts),
+                      onPressed: () {
+                        setState(() {
+                          _selected = [];
+                          _isEditting = true;
+                        });
+                      },
+                    ),
+                  ],
           ),
           body: Center(
             child: ListView.builder(
@@ -92,38 +120,41 @@ class _HomeState extends State<Home> {
                         }
                       });
                     } else {
-                      Fluttertoast.showToast(
-                          msg: this_data.id,
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          fontSize: 16.0);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Manage(
+                            id: this_data.id,
+                          ),
+                        ),
+                      );
                     }
                   },
                 );
               },
             ),
           ),
-          floatingActionButton: _isEditting
-              ? _selected.length > 0
-                  ? FloatingActionButton.extended(
-                      backgroundColor: Colors.red,
-                      icon: Icon(Icons.delete),
-                      label: Text('Delete'),
-                      onPressed: () async {
-                        setState(() {
-                          _isEditting = false;
-                        });
-                        await Cache.deleteContacts(_selected);
-                      },
-                    )
-                  : null
-              : FloatingActionButton(
-                  child: Icon(Icons.add),
-                  onPressed: () {},
-                ),
-          floatingActionButtonLocation: _isEditting
-              ? FloatingActionButtonLocation.centerFloat
-              : FloatingActionButtonLocation.endFloat,
+          floatingActionButton: _isEditting && _selected.length > 0
+              ? FloatingActionButton.extended(
+                  backgroundColor: Colors.red,
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                  label: Text('Delete', style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    final result = await API.deleteContacts(
+                        _selected.map((e) => PBPartialData(id: e)).toList());
+
+                    Toasts.showMessage(
+                        '$result contact${result > 1 ? 's' : ''} deleted');
+                    setState(() {
+                      _isEditting = false;
+                    });
+                  },
+                )
+              : null,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
         );
       },
     );
