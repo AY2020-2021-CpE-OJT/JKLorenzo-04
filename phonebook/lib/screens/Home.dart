@@ -5,9 +5,9 @@ import 'package:phonebook/screens/Create.dart';
 import 'package:phonebook/screens/Manage.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
 import 'package:phonebook/utils/Toasts.dart';
-import '../structures/PBData.dart';
+import '../structures/PBPartialData.dart';
 
-Stream<List<PBData>> contacts() async* {
+Stream<List<PBPartialData>> contacts() async* {
   yield* Stream.periodic(Duration(seconds: 5), (int seconds) async {
     return await API.getContacts();
   }).asyncMap((event) async => await event);
@@ -22,15 +22,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool _isEditting = false;
-  List<PBData> _contacts = [];
+  List<PBPartialData> _contacts = [];
   List<String> _selected = [];
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      initialData: <PBData>[],
       stream: contacts(),
-      builder: (context, AsyncSnapshot<List<PBData>> snapshot) {
+      builder: (context, AsyncSnapshot<List<PBPartialData>> snapshot) {
         if (snapshot.hasError) {
           Toasts.showError('Failed to get contacts');
         } else if (snapshot.hasData && snapshot.data != null) {
@@ -95,13 +94,6 @@ class _HomeState extends State<Home> {
                         fontSize: 18,
                         letterSpacing: 1),
                   ),
-                  subtitle: Text(
-                    '${this_data.phone_numbers.take(3).join(', ')} ${this_data.phone_numbers.length > 3 ? '...' : ''}',
-                    style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 12,
-                        letterSpacing: 1),
-                  ),
                   trailing: _isEditting
                       ? Icon(
                           _selected.contains(this_data.id)
@@ -115,14 +107,14 @@ class _HomeState extends State<Home> {
                         if (_selected.contains(this_data.id)) {
                           _selected.remove(this_data.id);
                         } else {
-                          _selected.add(this_data.id);
+                          _selected.add(this_data.id!);
                         }
                       });
                     } else {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => Manage(
-                            id: this_data.id,
+                            id: this_data.id!,
                           ),
                         ),
                       );
