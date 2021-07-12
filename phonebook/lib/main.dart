@@ -9,7 +9,10 @@ class PhonebookApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       title: 'Phonebook',
-      home: Home(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Home(),
+      },
     );
   }
 }
