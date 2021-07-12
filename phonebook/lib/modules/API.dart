@@ -9,6 +9,38 @@ const Map<String, String> _headers = {
 };
 
 class API {
+  static Future<PBData> getContact(String id) async {
+    final _uri = Uri.https(_authority, '/api/contact/$id');
+
+    final response = await get(_uri, headers: _headers);
+    if (response.statusCode != 200) throw response.body;
+
+    final response_body = jsonDecode(response.body);
+    return PBData.fromJson(response_body);
+  }
+
+  static Future<PBData> putContact(PBPartialData data) async {
+    final _uri = Uri.https(_authority, '/api/contact');
+    final request_body = jsonEncode(data.toJson());
+
+    final response = await put(_uri, headers: _headers, body: request_body);
+    if (response.statusCode != 200) throw response.body;
+
+    final response_body = jsonDecode(response.body);
+    return PBData.fromJson(response_body);
+  }
+
+  static Future<PBData> patchContact(PBData data) async {
+    final _uri = Uri.https(_authority, '/api/contact/${data.id}');
+    final request_body = jsonEncode(data.toJson());
+
+    final response = await patch(_uri, headers: _headers, body: request_body);
+    if (response.statusCode != 200) throw response.body;
+
+    final response_body = jsonDecode(response.body);
+    return PBData.fromJson(response_body);
+  }
+
   static Future<List<PBData>> getContacts() async {
     final _uri = Uri.https(_authority, '/api/contacts');
 
