@@ -6,6 +6,17 @@ class PBPartialData {
 
   PBPartialData({this.id, this.first_name, this.last_name, this.phone_numbers});
 
+  factory PBPartialData.fromJson(Map<String, dynamic> json) {
+    final raw_phone_numbers = json['phone_numbers'] as List<dynamic>?;
+    return PBPartialData(
+      id: json['_id'] as String,
+      first_name: json['first_name'] as String,
+      last_name: json['last_name'] as String,
+      phone_numbers:
+          raw_phone_numbers?.map((value) => value.toString()).toList(),
+    );
+  }
+
   toJson() {
     return {
       "_id": this.id,
