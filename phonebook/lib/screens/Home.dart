@@ -31,7 +31,7 @@ class _HomeState extends State<Home> {
       stream: contacts(),
       builder: (context, AsyncSnapshot<List<PBPartialData>> snapshot) {
         if (snapshot.hasError) {
-          Toasts.showError('Failed to get contacts');
+          Toasts.showError(snapshot.error.toString());
         } else if (snapshot.hasData && snapshot.data != null) {
           _contacts = snapshot.data!;
         }
