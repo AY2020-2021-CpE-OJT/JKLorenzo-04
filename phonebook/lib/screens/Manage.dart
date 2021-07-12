@@ -94,7 +94,12 @@ class _ManageState extends State<Manage> {
           children: [
             SizedBox(height: 50),
             CircleAvatar(
-              child: Icon(Icons.person, size: 80),
+              backgroundColor: Colors.blueAccent,
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 80,
+              ),
               radius: 50,
             ),
             Padding(
@@ -163,6 +168,7 @@ class _ManageState extends State<Manage> {
                     onPressed: () async {
                       try {
                         await API.deleteContact(data.id);
+                        Toasts.showMessage('Contact deleted');
                         Navigator.of(context)
                             .popUntil(ModalRoute.withName('/'));
                       } catch (error) {

@@ -40,7 +40,12 @@ class View extends StatelessWidget {
                     children: [
                       SizedBox(height: 50),
                       CircleAvatar(
-                        child: Icon(Icons.person, size: 80),
+                        backgroundColor: Colors.blueAccent,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 80,
+                        ),
                         radius: 50,
                       ),
                       Padding(
@@ -129,7 +134,7 @@ class View extends StatelessWidget {
                   Text(
                     phone_numbers[index],
                     style: TextStyle(
-                      color: Colors.amberAccent[50],
+                      color: Colors.grey[400],
                       letterSpacing: 2,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
