@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { MongoClient } from "mongodb";
-import { PBData } from "../../../structures/PBData.js";
-import { expectAll } from "../../../utils/TypeGuards.js";
+import { PBPartialData } from "../../../structures/PBData.js";
+import { expect } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.get("/", async (req, res) => {
@@ -10,8 +10,19 @@ export default function (router: Router, client: MongoClient): Router {
       const result = await client
         .db("phonebook")
         .collection("contacts")
-        .find()
-        .sort({ first_name: 1, last_name: 1 })
+        .aggregate([
+          {
+            $project: {
+              phone_numbers: 0,
+            },
+          },
+          {
+            $sort: {
+              first_name: 1,
+              last_name: 1,
+            },
+          },
+        ])
         .toArray();
 
       // construct
@@ -20,9 +31,14 @@ export default function (router: Router, client: MongoClient): Router {
           _id: value._id?.toString(),
           first_name: value?.first_name,
           last_name: value?.last_name,
-          phone_numbers: value?.phone_numbers,
-        } as PBData;
-        expectAll(this_data, "UNEXPECTED_RESULT");
+        } as PBPartialData;
+
+        expect(
+          this_data,
+          ["id", "first_name", "last_name"],
+          "UNEXPECTED_RESULT"
+        );
+
         return this_data;
       });
 
