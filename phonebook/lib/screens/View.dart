@@ -13,91 +13,89 @@ class View extends StatelessWidget {
     return FutureBuilder(
       future: API.getContact(id),
       builder: (context, AsyncSnapshot<PBData> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
         return Scaffold(
           backgroundColor: Colors.grey[900],
           appBar: AppBar(
             backgroundColor: Colors.grey[850],
             title: Text('View Contact'),
             centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => Manage(data: snapshot.data!),
-                    ),
-                  );
-                },
-              )
-            ],
+            actions: snapshot.hasData
+                ? [
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Manage(data: snapshot.data!),
+                          ),
+                        );
+                      },
+                    )
+                  ]
+                : null,
           ),
           body: Center(
-            child: ListView(
-              children: [
-                SizedBox(height: 50),
-                CircleAvatar(
-                  child: Icon(Icons.person, size: 80),
-                  radius: 50,
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(40, 30, 40, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: snapshot.hasData
+                ? ListView(
                     children: [
-                      Divider(
-                        color: Colors.grey[450],
+                      SizedBox(height: 50),
+                      CircleAvatar(
+                        child: Icon(Icons.person, size: 80),
+                        radius: 50,
                       ),
-                      SizedBox(height: 30),
-                      Text(
-                        'FIRST NAME',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          letterSpacing: 2,
-                          fontSize: 12,
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(40, 30, 40, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Divider(
+                              color: Colors.grey[450],
+                            ),
+                            SizedBox(height: 30),
+                            Text(
+                              'FIRST NAME',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                letterSpacing: 2,
+                                fontSize: 12,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              snapshot.data!.first_name,
+                              style: TextStyle(
+                                color: Colors.amberAccent[200],
+                                letterSpacing: 2,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'LAST NAME',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                letterSpacing: 2,
+                                fontSize: 12,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              snapshot.data!.last_name,
+                              style: TextStyle(
+                                color: Colors.amberAccent[200],
+                                letterSpacing: 2,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            ...renderPNums(snapshot.data!.phone_numbers),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 5),
-                      Text(
-                        snapshot.data!.first_name,
-                        style: TextStyle(
-                          color: Colors.amberAccent[200],
-                          letterSpacing: 2,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'LAST NAME',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          letterSpacing: 2,
-                          fontSize: 12,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        snapshot.data!.last_name,
-                        style: TextStyle(
-                          color: Colors.amberAccent[200],
-                          letterSpacing: 2,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      ...renderPNums(snapshot.data!.phone_numbers),
                     ],
-                  ),
-                ),
-              ],
-            ),
+                  )
+                : CircularProgressIndicator(),
           ),
         );
       },
