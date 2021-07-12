@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phonebook/modules/API.dart';
+import 'package:phonebook/screens/View.dart';
 import 'package:phonebook/structures/PBData.dart';
 import 'package:phonebook/utils/Toasts.dart';
 
@@ -87,7 +88,9 @@ class _ManageState extends State<Manage> {
                           PNumTextFields.map((e) => e.controller.text).toList(),
                         ),
                       );
-                      Navigator.of(context).pop();
+                      Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => View(id: _id)));
                     } catch (error) {
                       Toasts.showMessage(error.toString());
                     }
@@ -115,6 +118,8 @@ class _ManageState extends State<Manage> {
                           hintText: 'First Name',
                           labelText: 'First Name',
                         ),
+                        keyboardType: TextInputType.name,
+                        textCapitalization: TextCapitalization.words,
                       ),
                       TextField(
                         controller: lname_ctrlr,
@@ -123,6 +128,8 @@ class _ManageState extends State<Manage> {
                           hintText: 'Last Name',
                           labelText: 'Last Name',
                         ),
+                        keyboardType: TextInputType.name,
+                        textCapitalization: TextCapitalization.words,
                       ),
                       SizedBox(height: 20),
                       ...PNumTextFields,
@@ -148,7 +155,31 @@ class _ManageState extends State<Manage> {
                           });
                         },
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 50),
+                      TextButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            Text(
+                              'Delete Contact',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ],
+                        ),
+                        onPressed: () async {
+                          try {
+                            await API.deleteContact(_id);
+                            Navigator.of(context)
+                                .popUntil(ModalRoute.withName('/'));
+                          } catch (error) {
+                            Toasts.showMessage(error.toString());
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -190,6 +221,7 @@ class PNumTextField extends StatelessWidget {
           },
         ),
       ),
+      keyboardType: TextInputType.number,
     );
   }
 }
