@@ -54,7 +54,7 @@ export default function (router: Router, client: MongoClient): Router {
 
       expectAll(data, "UNEXPECTED_RESULT");
 
-      await res.json(data);
+      await res.send('OK');
     } catch (error) {
       console.error(error);
       res.json(error);
