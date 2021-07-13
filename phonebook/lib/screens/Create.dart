@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phonebook/modules/API.dart';
 import 'package:phonebook/screens/View.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
+import 'package:phonebook/utils/Functions.dart';
 import 'package:phonebook/utils/Toasts.dart';
 
 class Create extends StatefulWidget {
@@ -33,16 +34,20 @@ class _CreateState extends State<Create> {
             onPressed: () async {
               List<String> conditions = [];
 
+              // safe format input
+              final fname = Functions.safeFormat(fname_ctrlr.text);
+              final lname = Functions.safeFormat(lname_ctrlr.text);
+              final pnums = PNumTextFields.map((pnumfields) =>
+                  Functions.safeFormat(pnumfields.controller.text)).toList();
+
               // Check if all fields are valid
-              if (fname_ctrlr.text.isEmpty) {
+              if (fname.isEmpty) {
                 conditions.add('First Name must not be empty.');
               }
-              if (lname_ctrlr.text.isEmpty) {
+              if (lname.isEmpty) {
                 conditions.add('Last Name must not be empty.');
               }
-              if (PNumTextFields.where((e) => e.controller.text.isEmpty)
-                      .length >
-                  0) {
+              if (pnums.where((pnum) => pnum.isEmpty).length > 0) {
                 conditions.add('Phone Numbers must not be empty.');
               }
 
@@ -52,10 +57,9 @@ class _CreateState extends State<Create> {
                 try {
                   final result = await API.putContact(
                     PBPartialData(
-                      first_name: fname_ctrlr.text,
-                      last_name: lname_ctrlr.text,
-                      phone_numbers:
-                          PNumTextFields.map((e) => e.controller.text).toList(),
+                      first_name: fname,
+                      last_name: lname,
+                      phone_numbers: pnums,
                     ),
                   );
                   Navigator.of(context).pushReplacement(

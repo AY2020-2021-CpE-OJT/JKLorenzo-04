@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phonebook/modules/API.dart';
 import 'package:phonebook/screens/View.dart';
 import 'package:phonebook/structures/PBData.dart';
+import 'package:phonebook/utils/Functions.dart';
 import 'package:phonebook/utils/Toasts.dart';
 
 class Manage extends StatefulWidget {
@@ -54,15 +55,21 @@ class _ManageState extends State<Manage> {
             child: Text('Save'),
             onPressed: () async {
               List<String> conditions = [];
-              if (fname_ctrlr.text.isEmpty) {
+
+              // safe format input
+              final fname = Functions.safeFormat(fname_ctrlr.text);
+              final lname = Functions.safeFormat(lname_ctrlr.text);
+              final pnums = PNumTextFields.map((pnumfields) =>
+                  Functions.safeFormat(pnumfields.controller.text)).toList();
+
+              // Check if all fields are valid
+              if (fname.isEmpty) {
                 conditions.add('First Name must not be empty.');
               }
-              if (lname_ctrlr.text.isEmpty) {
+              if (lname.isEmpty) {
                 conditions.add('Last Name must not be empty.');
               }
-              if (PNumTextFields.where((e) => e.controller.text.isEmpty)
-                      .length >
-                  0) {
+              if (pnums.where((pnum) => pnum.isEmpty).length > 0) {
                 conditions.add('Phone Numbers must not be empty.');
               }
 
@@ -70,14 +77,7 @@ class _ManageState extends State<Manage> {
                 Toasts.showMessage(conditions.join('\n'));
               } else {
                 try {
-                  await API.patchContact(
-                    PBData(
-                      data.id,
-                      fname_ctrlr.text,
-                      lname_ctrlr.text,
-                      PNumTextFields.map((e) => e.controller.text).toList(),
-                    ),
-                  );
+                  await API.patchContact(PBData(data.id, fname, lname, pnums));
                   Navigator.of(context).popUntil(ModalRoute.withName('/'));
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => View(id: data.id)));
