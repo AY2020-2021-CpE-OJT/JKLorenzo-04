@@ -18,6 +18,7 @@ export default function (router: Router, client: MongoClient): Router {
           .db("phonebook")
           .collection("contacts")
           .find()
+          .sort({ first_name: 1, last_name: 1 })
           .toArray();
 
         // construct
