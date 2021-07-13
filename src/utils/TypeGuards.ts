@@ -1,5 +1,6 @@
 import { PBPartialData } from "../structures/PBData.js";
 import { ExpectError } from "./Errors.js";
+import { safeFormat } from "./Functions.js";
 
 type PBDataProps = "id" | "first_name" | "last_name" | "phone_numbers";
 
@@ -19,7 +20,7 @@ export function expect(
   if (expected.includes("first_name")) {
     if (
       typeof this_data.first_name !== "string" ||
-      this_data.first_name.length === 0
+      safeFormat(this_data.first_name).length === 0
     ) {
       throw new ExpectError(message ?? "INVALID_FIRST_NAME");
     }
@@ -28,7 +29,7 @@ export function expect(
   if (expected.includes("last_name")) {
     if (
       typeof this_data.last_name !== "string" ||
-      this_data.last_name.length === 0
+      safeFormat(this_data.last_name).length === 0
     ) {
       throw new ExpectError(message ?? "INVALID_LAST_NAME");
     }
@@ -38,7 +39,7 @@ export function expect(
     if (
       !Array.isArray(this_data.phone_numbers) ||
       this_data.phone_numbers.some(
-        (pnum) => typeof pnum !== "string" || pnum.length === 0
+        (pnum) => typeof pnum !== "string" || safeFormat(pnum).length === 0
       )
     ) {
       throw new ExpectError(message ?? "INVALID_PHONE_NUMBERS");
