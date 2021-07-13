@@ -29,7 +29,7 @@ export default function (router: Router, client: MongoClient): Router {
       await res.send(`${operation.deletedCount ?? 0}`);
     } catch (error) {
       console.error(error);
-      res.send(String(error));
+      res.status(400).send(String(error));
     }
   });
 }

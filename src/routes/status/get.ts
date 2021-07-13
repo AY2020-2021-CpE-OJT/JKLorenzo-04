@@ -8,7 +8,7 @@ export default function (router: Router, client: MongoClient): Router {
       await res.send("online");
     } catch (error) {
       console.error(error);
-      res.status(error.code ?? 400).send(String(error));
+      res.status(400).send(String(error));
     }
   });
 }
