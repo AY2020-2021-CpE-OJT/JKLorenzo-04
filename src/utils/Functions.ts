@@ -8,3 +8,7 @@ export function getFiles(dir: string): string[] {
     return list.concat(isDir ? getFiles(name) : [name]);
   }, []);
 }
+
+export function safeFormat(data: string): string {
+  return data.split("  ").join("").trim();
+}
