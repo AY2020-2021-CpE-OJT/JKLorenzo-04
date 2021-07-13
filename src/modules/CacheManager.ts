@@ -1,7 +1,7 @@
 import { PBData } from "../structures/PBData";
 
 const _cache = new Map<string, PBData>();
-let _ordered = true;
+let _ordered = false;
 let _valid = false;
 
 export default class CacheManager {
