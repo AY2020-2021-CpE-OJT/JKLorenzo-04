@@ -33,16 +33,12 @@ class _HomeState extends State<Home> {
         if (snapshot.hasError) {
           Toasts.showError(snapshot.error.toString());
           if (_isLoading == false) {
-            setState(() {
-              _isLoading = true;
-            });
+            _isLoading = true;
           }
         } else if (snapshot.hasData && snapshot.data != null) {
           _contacts = snapshot.data!;
           if (_isLoading == true) {
-            setState(() {
-              _isLoading = false;
-            });
+            _isLoading = false;
           }
         }
 
