@@ -8,7 +8,3 @@ export function getFiles(dir: string): string[] {
     return list.concat(isDir ? getFiles(name) : [name]);
   }, []);
 }
-
-export function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
