@@ -1,48 +1,53 @@
 import { Router } from "express";
 import { MongoClient } from "mongodb";
-import { PBPartialData } from "../../../structures/PBData.js";
-import { expect } from "../../../utils/TypeGuards.js";
+import CacheManager from "../../../modules/CacheManager.js";
+import { PBData, PBPartialData } from "../../../structures/PBData.js";
+import { expectAll } from "../../../utils/TypeGuards.js";
 
 export default function (router: Router, client: MongoClient): Router {
   return router.get("/", async (req, res) => {
     console.log("contacts get");
     try {
-      const result = await client
-        .db("phonebook")
-        .collection("contacts")
-        .aggregate([
-          {
-            $project: {
-              phone_numbers: 0,
-            },
-          },
-          {
-            $sort: {
-              first_name: 1,
-              last_name: 1,
-            },
-          },
-        ])
-        .toArray();
+      // get data from cache
+      let data = CacheManager.getAll();
 
-      // construct
-      const data = result.map((value) => {
-        const this_data = {
-          _id: value._id?.toString(),
-          first_name: value?.first_name,
-          last_name: value?.last_name,
-        } as PBPartialData;
+      // check if cache is invalid
+      if (!CacheManager.isValid() || !CacheManager.isOrdered()) {
+        // get data from the db
+        const result = await client
+          .db("phonebook")
+          .collection("contacts")
+          .find()
+          .toArray();
 
-        expect(
-          this_data,
-          ["id", "first_name", "last_name"],
-          "UNEXPECTED_RESULT"
-        );
+        // construct
+        data = result.map((value) => {
+          const this_data = {
+            _id: value._id?.toString(),
+            first_name: value?.first_name,
+            last_name: value?.last_name,
+            phone_numbers: value?.phone_numbers,
+          } as PBData;
 
-        return this_data;
-      });
+          // check data
+          expectAll(this_data, "UNEXPECTED_RESULT");
+          return this_data;
+        });
 
-      await res.json(data);
+        // update cache
+        CacheManager.updateAll(data);
+      }
+
+      // send data without phone numbers
+      await res.json(
+        data.map((this_data) => {
+          return {
+            _id: this_data._id,
+            first_name: this_data.first_name,
+            last_name: this_data.last_name,
+          } as PBPartialData;
+        })
+      );
     } catch (error) {
       console.error(error);
       res.status(400).send(String(error));

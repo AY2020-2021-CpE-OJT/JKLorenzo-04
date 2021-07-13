@@ -1,5 +1,6 @@
 import { Router } from "express";
 import express, { MongoClient } from "mongodb";
+import CacheManager from "../../../modules/CacheManager.js";
 import { PBData, PBPartialData } from "../../../structures/PBData.js";
 import { expect, expectAll } from "../../../utils/TypeGuards.js";
 
@@ -52,9 +53,22 @@ export default function (router: Router, client: MongoClient): Router {
         phone_numbers: operation.value.phone_numbers,
       } as PBData;
 
+      // check data
       expectAll(data, "UNEXPECTED_RESULT");
 
-      await res.send('OK');
+      // update cache
+      CacheManager.update(data);
+
+      // invalidate cache order on name change
+      if (
+        raw_data.first_name !== data.first_name ||
+        raw_data.last_name !== data.last_name
+      ) {
+        CacheManager.invalidateOrder();
+      }
+
+      // ack request
+      await res.send("OK");
     } catch (error) {
       console.error(error);
       res.status(400).send(String(error));
