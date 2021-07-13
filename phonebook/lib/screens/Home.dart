@@ -8,7 +8,7 @@ import 'package:phonebook/utils/Toasts.dart';
 import '../structures/PBPartialData.dart';
 
 Stream<List<PBPartialData>> contacts() async* {
-  yield* Stream.periodic(Duration(seconds: 5), (int seconds) async {
+  yield* Stream.periodic(Duration(seconds: 3), (_) async {
     return await API.getContacts();
   }).asyncMap((event) async => await event);
 }
