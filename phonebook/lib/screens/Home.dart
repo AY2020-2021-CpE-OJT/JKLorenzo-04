@@ -5,7 +5,6 @@ import 'package:phonebook/screens/Create.dart';
 import 'package:phonebook/screens/View.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
 import 'package:phonebook/utils/Toasts.dart';
-import '../structures/PBPartialData.dart';
 
 Stream<List<PBPartialData>> contacts() async* {
   yield* Stream.periodic(Duration(seconds: 3), (_) async {

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:phonebook/structures/PBData.dart';
 import 'package:phonebook/structures/PBPartialData.dart';
-import '../structures/PBData.dart';
 
 const _authority = 'jklorenzo-pb-api.herokuapp.com';
 const Map<String, String> _headers = {
