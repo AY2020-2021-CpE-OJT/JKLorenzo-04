@@ -9,7 +9,7 @@ class PBPartialData {
   factory PBPartialData.fromJson(Map<String, dynamic> json) {
     final raw_phone_numbers = json['phone_numbers'] as List<dynamic>?;
     return PBPartialData(
-      id: json['_id'] as String,
+      id: json['id'] as String,
       first_name: json['first_name'] as String,
       last_name: json['last_name'] as String,
       phone_numbers:
@@ -19,7 +19,7 @@ class PBPartialData {
 
   toJson() {
     return {
-      "_id": this.id,
+      "id": this.id,
       "first_name": this.first_name,
       "last_name": this.last_name,
       "phone_numbers": this.phone_numbers
